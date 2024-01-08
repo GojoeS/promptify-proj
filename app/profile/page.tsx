@@ -17,7 +17,7 @@ const MyProfile = () => {
     router.push(`/update-prompt?id=${post._id}`)
   }
 
-  const handleDelete = async (post:any) => {
+  const handleDelete = async (post:Post) => {
     const hasConfirmed = confirm("Are you sure you want to delete this prompt?");
 
     if (hasConfirmed) {
@@ -27,13 +27,16 @@ const MyProfile = () => {
           method: 'DELETE',
         });
 
-        const filteredPosts = posts.filter((item) => item._id !== post._id);
+        const filteredPosts = posts.filter((item: Post) => item._id !== post._id);
         setPosts(filteredPosts);
       } catch (error) {
         console.log(error);
+        
       }
     }
   };
+
+  
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -44,7 +47,7 @@ const MyProfile = () => {
     }
     
     if(session?.user?.id) fetchPosts();
-  }, [session?.user?.id])
+  }, [session?.user.id])
 
   return (
     <Profile 

@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 
 import Form from '@components/Form'
 
+
 const CreatePrompt: React.FC = () => {
 
   const router = useRouter();
-  const {data: session} = useSession()
+  const {data: session} = useSession();
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [post, setPost] = useState({
@@ -26,7 +27,7 @@ const CreatePrompt: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({
           prompt: post.prompt,
-          userId: session?.user?.id,
+          userId: session?.user.id,
           tag: post.tag,
           createdAt: new Date().toISOString()
         }),
