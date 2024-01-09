@@ -36,8 +36,6 @@ const MyProfile = () => {
     }
   };
 
-  
-
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch(`/api/users/${session?.user?.id}/posts`);

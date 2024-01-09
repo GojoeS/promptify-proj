@@ -39,6 +39,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
   - Search by tag
   - Search by Username
 [] Implement Click on Tag
-{} Implement View other Profile
+[] Implement View other Profile
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

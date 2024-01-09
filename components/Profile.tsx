@@ -5,8 +5,8 @@ interface ProfileProps{
   name:string;
   desc:string;
   data:Array<any>;
-  handleEdit:(event: Post) => void;
-  handleDelete:any;
+  handleEdit?:(event: Post) => void;
+  handleDelete?:(event: Post) => void;
 }
 
 const Profile:React.FC<ProfileProps> = ({ name, desc, data, handleEdit, handleDelete}) => {

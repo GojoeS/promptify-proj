@@ -15,9 +15,16 @@ interface PromptCardListProps{
 }
 
 const PromptCardList:React.FC<PromptCardListProps> = ({data, handleTagClick }) => {
+  
+  const sortedData = data.slice().sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+    return dateB - dateA;
+  });
+
   return(
     <div className="mt-16 prompt_layout">
-      {data.map((post) => (
+      {sortedData.map((post) => (
         <PromptCard 
           key={post._id}
           post={post}
@@ -32,10 +39,10 @@ const Feed = () => {
 
   const [searchText, setSearchText] = useState('');
   const [posts, setPosts] = useState<Array<any>>([]);
+  const [searchTimeout, setSearchTimeout] = useState<any>(null);
+  const [searchedResults, setSearchedResults] = useState<any[]>([]);
 
-  const handleSearchChange = (e:ChangeEvent<HTMLInputElement>) => {
-
-  }
+  
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -46,6 +53,30 @@ const Feed = () => {
     
     fetchPosts();
   }, [])
+
+  const filterPrompts = (searchtext: string | RegExp) => {
+    const regex = new RegExp(searchtext, 'i');
+    return posts.filter((item) => regex.test(item.creator.username) || regex.test(item.tag) || regex.test(item.prompt));
+  };
+
+  const handleSearchChange = (e:ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(searchTimeout);
+    setSearchText(e.target.value)
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResult = filterPrompts(e.target.value);
+        setSearchedResults(searchResult);
+      }, 500)
+    );
+  }
+
+  const handleTagClick = (tagName:any) => {
+    setSearchText(tagName);
+    console.log(tagName)
+    const searchResult = filterPrompts(tagName);
+    setSearchedResults(searchResult);
+  };
 
   return (
     <section className="feed">
@@ -59,11 +90,15 @@ const Feed = () => {
           className="search_input peer"
         />
       </form>
-
+      
+      { searchText ? (
+        <PromptCardList data={searchedResults} handleTagClick={handleTagClick} />
+      ) : (
       <PromptCardList
         data={posts}
-        handleTagClick={() => {}}
+        handleTagClick={handleTagClick}
       />
+      )}
     </section>
   )
 }

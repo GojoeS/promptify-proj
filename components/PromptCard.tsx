@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import {useSession} from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation'
+import Link from "next/link";
 
 interface PromptCardProps {
   post: any; 
@@ -17,7 +18,7 @@ const PromptCard:React.FC<PromptCardProps> = ({post, handleTagClick, handleEdit,
 
   const {data:session} = useSession()
   const pathName = usePathname();
-  // const router = useRouter();
+  const router = useRouter();
 
   const [copied, setCopied] = useState<string>("")
 
@@ -34,11 +35,19 @@ const PromptCard:React.FC<PromptCardProps> = ({post, handleTagClick, handleEdit,
     hour: 'numeric',
     minute: 'numeric',
   }).format(new Date(post.createdAt));
+
+  const handleProfileClick = () => {
+
+    if(post.creator._id == session?.user.id) return router.push('/profile')
+
+    router.push(`/profile/${post.creator._id}?name=${post.creator.username}`)
+  }
   
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
-        <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
+        <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
+        onClick={handleProfileClick}>
           <Image 
             src={post.creator.image}
             alt="user_image"
@@ -50,6 +59,7 @@ const PromptCard:React.FC<PromptCardProps> = ({post, handleTagClick, handleEdit,
             <h3 className="font-satoshi font-semibold text-gray-900">
               {post.creator.username}
             </h3>
+            
                         
             <p className="font-inter text-sm text-gray-500">
               {post.creator.email}
@@ -75,7 +85,7 @@ const PromptCard:React.FC<PromptCardProps> = ({post, handleTagClick, handleEdit,
       <p className="font-inter text-sm blue_gradient cursor-pointer"
         onClick={() => handleTagClick && handleTagClick(post.tag)}
       >
-        #{post.tag}
+        { post.tag[0] == '#' ? post.tag : `#${post.tag}`}
       </p>
       {session?.user?.id === post.creator._id && pathName === '/profile' && (
         <div className="mt-5 flex-center  gap-4 border-t border-gray-100">
